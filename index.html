@@ -134,6 +134,16 @@
             }
             return null;
         }
+        function deleteAllCookies() {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            }
+        }
+
 
         // Beim Laden der Seite überprüfen, ob ein gespeichertes Ergebnis im Cookie vorhanden ist
         window.onload = function() {
@@ -211,6 +221,10 @@
                 showArrayOutputContainer.style.display = "none"
                 outputContainer.style.display = "none";
 
+            }else if (passwordInput === "löschen") {
+                // Löschen Sie alle Cookies
+                deleteAllCookies();
+                alert("Alle Cookies wurden gelöscht.");
             } else {
                 document.getElementById("errorMessage").textContent = "Dein 3. Auge ist nicht weit genug offen!";
                 passwordList.innerHTML = "";
