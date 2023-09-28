@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geburtstagsaktivitäten-Generator</title>
+    <style>
+        body {
+            background-color: #f2f2e9;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            color: #543d26;
+        }
+
+        #output-container {
+            display: none;
+            background-color: #f4efe1;
+            padding: 10px;
+            border: 2px solid #543d26;
+            margin: 20px auto;
+            width: 80%;
+        }
+
+        #output {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #generateButton {
+            background-color: #543d26;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #generateButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #generateButton:hover {
+            background-color: #7e5c3d;
+        }
+
+        #passwordInput {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #showButton {
+            background-color: #543d26;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #showButton:hover {
+            background-color: #7e5c3d;
+        }
+
+        #passwordList {
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @keyframes fireworks {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .firework {
+            animation: fireworks 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>Geburtstagsaktivitäten-Generator</h1>
+
+    <div id="output-container">
+        <p id="output">Hier wird die Geburtstagsaktivität angezeigt.</p>
+        <ul id="passwordList"></ul>
+        <ul id="showArray"></ul>
+        <p class="error-message" id="errorMessage"></p>
+    </div>
+    <div id="show-container">
+        <ul id="showArrayOutput"></ul>
+    </div>
+
+    <button id="generateButton">Generiere Geburtstagsaktivität</button><br><br>
+    <input type="password" id="passwordInput" placeholder="Passwort eingeben">
+    <button id="showButton">Anzeigen</button>
+
+    <script>
+        var stringArray = ["Oktoberfest", "Schlossbesichtigung", "BMW Museum", "Museum deiner Wahl", "Shoppingtour", "Legoland", "Sea Life", "Tierpark", "Labyrinth", "Kletterpark", "Escape Room"];
+        var showArray = ["Oktoberfest", "Schlossbesichtigung", "BMW Museum", "Museum deiner Wahl", "Shoppingtour", "Legoland", "Sea Life", "Tierpark", "Labyrinth", "Kletterpark", "Escape Room"];
+        var randomButtonClicked = false;
+        var generatedRandomString = "";
+
+        // Funktion zum Setzen eines Cookies
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        // Funktion zum Lesen eines Cookies
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Beim Laden der Seite überprüfen, ob ein gespeichertes Ergebnis im Cookie vorhanden ist
+        window.onload = function() {
+            generatedRandomString = getCookie("generatedRandomString");
+            if (generatedRandomString) {
+                document.getElementById("output").textContent = "Zufallsstring: " + generatedRandomString;
+                document.getElementById("output").style.display = "block";
+                randomButtonClicked = true;
+                document.getElementById("generateButton").disabled = true;
+            }
+        };
+
+        function generateRandomString() {
+            var randomIndex = Math.floor(Math.random() * stringArray.length);
+            var randomString = stringArray[randomIndex];
+            return randomString;
+        }
+
+        document.getElementById("generateButton").addEventListener("click", function() {
+            if (!randomButtonClicked) {
+                generatedRandomString = generateRandomString();
+                var outputElement = document.getElementById("output");
+                outputElement.textContent = "Zufallsstring: " + generatedRandomString;
+
+                // Ergebnis im Cookie speichern
+                setCookie("generatedRandomString", generatedRandomString, 365); // 365 Tage Gültigkeit
+
+                outputElement.classList.add("firework");
+                setTimeout(function() {
+                    outputElement.classList.remove("firework");
+                }, 500);
+
+                document.getElementById("generateButton").disabled = true;
+
+                document.getElementById("errorMessage").textContent = "";
+
+                randomButtonClicked = true;
+            }
+        });
+
+        document.getElementById("showButton").addEventListener("click", function() {
+            var passwordInput = document.getElementById("passwordInput").value;
+            var passwordList = document.getElementById("passwordList");
+            var showArrayContainer = document.getElementById("showArray");
+            var showArrayOutputContainer = document.getElementById("showArrayOutput");
+            var outputContainer = document.getElementById("output-container");
+
+            if (passwordInput === "Vision") {
+                passwordList.innerHTML = "";
+                showArray.forEach(function(string) {
+                    var listItem = document.createElement("li");
+                    listItem.textContent = string;
+                    showArrayOutputContainer.appendChild(listItem);
+                });
+                showArrayOutputContainer.style.display = "block"
+                document.getElementById("errorMessage").textContent = "";
+                document.getElementById("output").style.display = "none";
+
+            } else if (passwordInput === "Zeig") {
+                passwordList.innerHTML = "";
+                showArrayOutputContainer.innerHTML = "";
+                document.getElementById("errorMessage").textContent = "";
+
+                document.getElementById("output").textContent = "Zufallsstring: " + generatedRandomString;
+                document.getElementById("output").style.display = "block";
+
+                outputContainer.style.display = "block";
+
+            }else if (passwordInput === "leer") {
+                passwordList.innerHTML = "";
+                document.getElementById("errorMessage").textContent = "";
+
+                document.getElementById("output").textContent = "Zufallsstring: " + generatedRandomString;
+                document.getElementById("output").style.display = "none";
+                showArrayOutputContainer.style.display = "none"
+                outputContainer.style.display = "none";
+
+            } else {
+                document.getElementById("errorMessage").textContent = "Dein 3. Auge ist nicht weit genug offen!";
+                passwordList.innerHTML = "";
+                showArrayOutputContainer.innerHTML = "";
+                outputContainer.style.display = "none";
+                document.getElementById("output").style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
